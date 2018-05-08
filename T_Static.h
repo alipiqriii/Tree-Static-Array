@@ -11,11 +11,15 @@ typedef struct Tree{
 };
 
 void CreateRoot(Tree Array[],Infotype Data);
-void InsertNode(Tree Array[],int Parent,Infotype Data);
+void InsertNode(Tree Array[],Infotype Parent,Infotype Data);
 void PreOrder (Tree Array[]);
 void PostOrder (Tree Array[]);
 int Depth(Tree Array[]);
-int Degree(Tree Array[]);
+int Degree(Tree Array[],Infotype Data);
 int DepthRecursive(Tree Array[],int indexs);
+int DegreeRecursive(Tree Array[],int Indexs);
 void DeleteNode(Tree Array[],int Indexs);
 void _DeleteNode(Tree Array[],int Indexs);
+void InOrder(Tree Array[]);
+int Search(Tree Array[],Infotype Data);
+bool IsEmpty(int Indexs);
