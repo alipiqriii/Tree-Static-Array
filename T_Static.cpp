@@ -1,8 +1,10 @@
 #include "T_Static.h"
+
 bool IsEmpty(int Indexs){
 	if(Indexs != Nil) return false;
 	else return true;	
 }
+
 void CreateRoot(Tree Array[],Infotype Data){
 	if(IsEmpty(Array[IndexRoot].Info)){
 		Array[IndexRoot].Parent = Nil;
@@ -13,11 +15,12 @@ void CreateRoot(Tree Array[],Infotype Data){
 	else printf("(!) ~ Root Sudah Ada\n");
 	
 }
+
 int Search(Tree Array[],Infotype Data){
 	int i=IndexRoot;
 	bool Found=false;
 	//Cari Parent
-	while((!IsEmpty(Array[i].Info) != Nil || i == IndexRoot) && !Found && i<(MAX_SIZE+1)){
+	while((!IsEmpty(Array[i].Info) || i == IndexRoot) && !Found && i<(MAX_SIZE+1)){
 		if(Array[i].Info == Data) {
 			Found=true;
 		}
@@ -26,104 +29,42 @@ int Search(Tree Array[],Infotype Data){
 	if (Found) return i;
 	else return Nil;
 }
-void InsertNode(Tree Array[],Infotype Parent,Infotype Data){
+
+void InsertNode(Tree Array[],int IndexParent,Infotype Data){
 	int i=IndexRoot;
 	int IndexLastBrother=Nil;
-	int IndexParent=Nil;
 	bool Found=false;
-	
-	//Cari Parent
-	IndexParent = Search(Array,Parent);
-	
+//	printf("Parent Nil %d\n",IndexParent);
+//	if(IndexParent==Nil){
+//		printf("Parent Nil %d\n",IndexParent);
+//	}
 	if(IsEmpty(Array[IndexRoot].Info)) printf("(!) ~ Root Ga Ada\n");
 	else{
-		
-	
-	if(!IsEmpty(IndexParent)){
-		
-		//Cari Posisi
-		i=IndexRoot;
-		while(!IsEmpty(Array[i].Parent) || i == IndexRoot){
-			if(Array[i].Parent == IndexParent) IndexLastBrother = i;
-			i++;
+		if(!IsEmpty(IndexParent)){
+			//Cari Posisi
+			i=IndexRoot;
+			while(!IsEmpty(Array[i].Parent) || i == IndexRoot){
+				if(Array[i].Parent == IndexParent) IndexLastBrother = i;
+				i++;
+			}
+				
+			//Cek Jika Parent Tidak Ada First Child
+			if(IsEmpty(Array[IndexParent].FirstSon)) Array[IndexParent].FirstSon = i;
+			
+			Array[i].Info = Data;
+			Array[IndexLastBrother].Brother = i;
+			Array[i].Brother = Nil;
+			Array[i].Parent = IndexParent;
+			Array[i].FirstSon = Nil;	
+				
 		}
-			
-		//Cek Jika Parent Tidak Ada First Child
-//		if(IsEmpty(Array[IndexRoot].FirstSon)) Array[IndexRoot].FirstSon = i;
-		if(IsEmpty(Array[IndexParent].FirstSon)) Array[IndexParent].FirstSon = i;
-		
-		Array[i].Info = Data;
-		Array[IndexLastBrother].Brother = i;
-		Array[i].Brother = Nil;
-		Array[i].Parent = IndexParent;
-		Array[i].FirstSon = Nil;	
-			
-	}
-	
-	else printf("(!) ~ Parent Dengan Value %c Tidak Tersedia\n",Parent);
+		else printf("(!) ~ Parent Tidak Tersedia\n");
 	}
 	
 }
 
-void PreOrder (Tree Array[]){
-	int NodeCurrent;
-	bool Resmi;
-	NodeCurrent=IndexRoot;
-	printf("%c ",Array[NodeCurrent].Info);
-	Resmi = true;
-	int y,z;
-	y=0;z=0;
-	do{
-		if(!IsEmpty(Array[NodeCurrent].FirstSon) && Resmi){		
-			NodeCurrent = Array[NodeCurrent].FirstSon;
-			printf("%c ",Array[NodeCurrent].Info);
-		}
-		else {
-			if(!IsEmpty(Array[NodeCurrent].Brother)){
-				NodeCurrent = Array[NodeCurrent].Brother;
-				printf("%c ",Array[NodeCurrent].Info);
-				Resmi = true;
-			}
-			else {
-				if(y>z) z=y;
-				NodeCurrent = Array[NodeCurrent].Parent;
-				Resmi = false;
-			}
-		}
-	}while(Array[NodeCurrent].Parent != Nil);
-}
-
-int DepthRecursive(Tree Array[],int Indexs)
-{
-	int y=0,z=0;
-
-	if(IsEmpty(Array[Indexs].FirstSon))
-		return 0;
-	y=DepthRecursive(Array,Array[Indexs].FirstSon);
-	z=DepthRecursive(Array,Array[Indexs].Brother);
-	if (y > z)
-		return (y+1);
-	else
-		return (z+1);
-}
-
-int DegreeRecursive(Tree Array[],int Indexs)
-{
-	int y=0,z=0;
-	int _Degree=0;
-	if(IsEmpty(Array[Indexs].FirstSon))
-		return 0;
-	y=DepthRecursive(Array,Array[Indexs].FirstSon);
-	z=DepthRecursive(Array,Array[Indexs].Brother);
-//	printf("%d",_Degree);
-	return (y+z+1);
+void DeleteNode(Tree Array[],int Indexs){
 	
-}
-
-void DeleteNode(Tree Array[],Infotype Data){
-	
-	int Indexs;
-	Indexs = Search(Array,Data);
 	Tree DeleteNode;
 	//Save Information Node Delete
 	DeleteNode.Parent	= Array[Indexs].Parent;
@@ -198,6 +139,7 @@ void _DeleteNode(Tree Array[],int Indexs){
     Array[Indexs].Brother = Nil;
     Array[Indexs].Info = Nil;
 }
+
 int Depth(Tree Array[]){
 	int NodeCurrent;
 	bool Resmi;
@@ -218,6 +160,7 @@ int Depth(Tree Array[]){
 			else {
 				if(y>z) z=y;
 				y--;
+				
 				NodeCurrent = Array[NodeCurrent].Parent;
 				Resmi = false;
 			}
@@ -225,6 +168,70 @@ int Depth(Tree Array[]){
 	}while(Array[NodeCurrent].Parent != Nil);
 	
 	return z;
+	
+}
+
+int Min(Tree Array[]){
+	int NodeCurrent;
+	bool Resmi;
+	NodeCurrent=IndexRoot;
+	Resmi = true;
+	int Min,Temp_Min;
+	Min=0;Min=0;
+	Min=Array[NodeCurrent].Info;
+	do{
+		if(Array[NodeCurrent].FirstSon != Nil && Resmi){
+			NodeCurrent = Array[NodeCurrent].FirstSon;
+			Temp_Min = Array[NodeCurrent].Info;
+			if(Temp_Min < Min) Min = Temp_Min;
+		}
+		else {
+			if(Array[NodeCurrent].Brother != Nil){
+				NodeCurrent = Array[NodeCurrent].Brother;
+				Temp_Min = Array[NodeCurrent].Info;
+				if(Temp_Min < Min) Min = Temp_Min;
+				Resmi = true;
+			}
+			else {
+				NodeCurrent = Array[NodeCurrent].Parent;
+				Resmi = false;
+			}
+		}
+	}while(Array[NodeCurrent].Parent != Nil);
+	
+	return Min;
+	
+}
+
+int Max(Tree Array[]){
+	int NodeCurrent;
+	bool Resmi;
+	NodeCurrent=IndexRoot;
+	Resmi = true;
+	int Max,Temp_Max;
+	Max=0;Temp_Max=0;
+	Max=Array[NodeCurrent].Info;
+	do{
+		if(Array[NodeCurrent].FirstSon != Nil && Resmi){
+			NodeCurrent = Array[NodeCurrent].FirstSon;
+			Temp_Max = Array[NodeCurrent].Info;
+			if(Temp_Max > Max) Max = Temp_Max;
+		}
+		else {
+			if(Array[NodeCurrent].Brother != Nil){
+				NodeCurrent = Array[NodeCurrent].Brother;
+				Temp_Max = Array[NodeCurrent].Info;
+				if(Temp_Max > Max) Max = Temp_Max;
+				Resmi = true;
+			}
+			else {
+				NodeCurrent = Array[NodeCurrent].Parent;
+				Resmi = false;
+			}
+		}
+	}while(Array[NodeCurrent].Parent != Nil);
+	
+	return Max;
 	
 }
 
@@ -280,6 +287,7 @@ void PostOrder (Tree Array[]){
 }
 
 void InOrder(Tree Array[]){
+	
 	int NodeCurrent = IndexRoot;
 	bool Resmi = true;
 	while (!IsEmpty(NodeCurrent)){
@@ -304,4 +312,265 @@ void InOrder(Tree Array[]){
 		}
 	}
 	
+}
+
+void PreOrder (Tree Array[]){
+	int NodeCurrent;
+	bool Resmi;
+	NodeCurrent=IndexRoot;
+	printf("%c ",Array[NodeCurrent].Info);
+	Resmi = true;
+	do{
+		if(!IsEmpty(Array[NodeCurrent].FirstSon) && Resmi){		
+			NodeCurrent = Array[NodeCurrent].FirstSon;
+			printf("%c ",Array[NodeCurrent].Info);
+		}
+		else {
+			if(!IsEmpty(Array[NodeCurrent].Brother)){
+				NodeCurrent = Array[NodeCurrent].Brother;
+				printf("%c ",Array[NodeCurrent].Info);
+				Resmi = true;
+			}
+			else {
+				NodeCurrent = Array[NodeCurrent].Parent;
+				Resmi = false;
+			}
+		}
+	}while(Array[NodeCurrent].Parent != Nil);
+}
+
+int Height(Tree Array[]){
+	return (Depth(Array) + 1);
+}
+
+void Leaf(Tree Array[]){
+	
+	int NodeCurrent;
+	bool Resmi;
+	NodeCurrent=IndexRoot;
+	Resmi = true;
+	int _Leaf=0;
+	printf("{ ");
+	do{
+		if(!IsEmpty(Array[NodeCurrent].FirstSon) && Resmi){		
+			NodeCurrent = Array[NodeCurrent].FirstSon;
+		}
+		else {
+			if(!IsEmpty(Array[NodeCurrent].Brother)){
+				if(IsEmpty(Array[NodeCurrent].FirstSon)){
+					printf("%c ",Array[NodeCurrent].Info);
+					_Leaf++;	
+				}
+				NodeCurrent = Array[NodeCurrent].Brother;
+				Resmi = true;
+			}
+			else {
+				if(IsEmpty(Array[NodeCurrent].FirstSon)){
+					printf("%c ",Array[NodeCurrent].Info);
+					_Leaf++;	
+				}
+				NodeCurrent = Array[NodeCurrent].Parent;
+				Resmi = false;
+			}
+		}
+	}while(Array[NodeCurrent].Parent != Nil);
+	printf("} [%d]\n",_Leaf);	
+
+}
+
+int Size(Tree Array[]){
+	
+	int NodeCurrent;
+	bool Resmi;
+	NodeCurrent=IndexRoot;
+	Resmi = true;
+	int _Size=0;
+	if(!IsEmpty(Array[NodeCurrent].Info)){
+		_Size++;
+		do{
+		if(!IsEmpty(Array[NodeCurrent].FirstSon) && Resmi){		
+			NodeCurrent = Array[NodeCurrent].FirstSon;
+			_Size++;
+		}
+		else {
+			if(!IsEmpty(Array[NodeCurrent].Brother)){
+				_Size++;
+				NodeCurrent = Array[NodeCurrent].Brother;
+				Resmi = true;
+			}
+			else {
+				NodeCurrent = Array[NodeCurrent].Parent;
+				Resmi = false;
+			}
+		}
+		}while(Array[NodeCurrent].Parent != Nil);
+	}
+	else return 0;
+	return _Size;
+}
+
+void Ancestor(Tree Array[],int Indexs){
+	int _Ancestor=0;
+	int NodeCurrent = Array[Indexs].Parent;
+	if(!IsEmpty(NodeCurrent)){
+		printf("{ ");
+		do {
+			_Ancestor++;
+			printf("%c ",Array[NodeCurrent].Info);
+			NodeCurrent = Array[NodeCurrent].Parent;
+		}while(!IsEmpty(NodeCurrent));	
+		printf("} [%d]\n",_Ancestor);
+	}
+	else printf("(*) Tidak Ada Ancestor Lainnya\n");
+	
+}
+
+void Descendant (Tree Array[],int Indexs){
+	int NodeCurrent;
+	bool Resmi;
+	int _Descendant=0;
+	NodeCurrent=Array[Indexs].FirstSon;
+	if(!IsEmpty(NodeCurrent)){
+		_Descendant++;
+		printf("{ ");
+		printf("%c ",Array[NodeCurrent].Info);
+		Resmi = true;
+		do{
+			if(!IsEmpty(Array[NodeCurrent].FirstSon) && Resmi){	
+				_Descendant++;	
+				NodeCurrent = Array[NodeCurrent].FirstSon;
+				printf("%c ",Array[NodeCurrent].Info);
+			}
+			else {
+				if(!IsEmpty(Array[NodeCurrent].Brother)){
+					_Descendant++;
+					NodeCurrent = Array[NodeCurrent].Brother;
+					printf("%c ",Array[NodeCurrent].Info);
+					Resmi = true;
+				}
+				else {
+					NodeCurrent = Array[NodeCurrent].Parent;
+					Resmi = false;
+				}
+			}
+		}while(NodeCurrent != Indexs);
+		printf("} [%d]\n",_Descendant);
+	}
+	
+	else printf("(*) Tidak Ada Descendant Lainnya\n");	
+}
+
+int GetRoot(Tree Array[],int Indexs){
+	int _Root;
+	_Root = Indexs;
+	if(!IsEmpty(_Root)){
+		if(!IsEmpty(Array[_Root].Parent)){
+			do{
+				_Root = Array[_Root].Parent;
+			}while(!IsEmpty(Array[_Root].Parent));	
+		}
+		return _Root;
+	}
+	else {
+		printf("(!) Tidak Ada Elemen Tersebut Dalam Tree\n");
+		return Nil;
+	}
+}
+
+int GetParent(Tree Array[],int Indexs){
+	if(!IsEmpty(Indexs)) return Array[Indexs].Parent;
+	else {
+		printf("(!) Tidak Ada Elemen Tersebut Dalam Tree\n");
+		return Nil;
+	}
+}
+
+int GetSon(Tree Array[],int Indexs){
+	if(!IsEmpty(Indexs)) return Array[Indexs].FirstSon;
+	else {
+		printf("(!) Tidak Ada Elemen Tersebut Dalam Tree\n");
+		return Nil;
+	}
+}
+
+int GetBrother(Tree Array[],int Indexs){
+	if(!IsEmpty(Indexs)) return Array[Indexs].Brother;
+	else {
+		printf("(!) Tidak Ada Elemen Tersebut Dalam Tree\n");
+		return Nil;
+	}
+}
+
+int RecSize(Tree Array[],int Indexs){
+	int _Rec=0;	
+    if (IsEmpty(Array[Indexs].Info)) return 0;
+    _Rec+=RecSize(Array,Array[Indexs].FirstSon);
+    _Rec+=RecSize(Array,Array[Indexs].Brother);
+    return (_Rec + 1);
+}
+
+void SubTree(Tree Array[],int Indexs){
+	int NodeCurrent,NodeChild;
+	bool Resmi;
+	NodeChild=Array[Indexs].FirstSon;
+	int NumberOfSubTree = 0;
+	while(!IsEmpty(NodeChild)){
+		if(!IsEmpty(Array[NodeChild].FirstSon)){
+			NumberOfSubTree++;
+			NodeCurrent = NodeChild;
+			printf("{ ");
+			printf("%c ",Array[NodeCurrent].Info);
+			Resmi = true;
+			do{
+				if(!IsEmpty(Array[NodeCurrent].FirstSon) && Resmi){	
+					NodeCurrent = Array[NodeCurrent].FirstSon;
+					printf("%c ",Array[NodeCurrent].Info);
+				}
+				else {
+					if(!IsEmpty(Array[NodeCurrent].Brother)){
+						NodeCurrent = Array[NodeCurrent].Brother;
+						printf("%c ",Array[NodeCurrent].Info);
+						Resmi = true;
+					}
+					else {
+						NodeCurrent = Array[NodeCurrent].Parent;
+						Resmi = false;
+					}
+				}
+			}while(NodeCurrent != NodeChild);
+			printf("}, ");
+		}
+		NodeChild = Array[NodeChild].Brother;
+	}
+	printf("[%d] Subtree\n",NumberOfSubTree);
+}
+
+int MaxDegree(Tree Array[]){
+	int NodeCurrent;
+	int MaxDegree;
+	int TempMaxDegree;
+	bool Resmi;
+	NodeCurrent=IndexRoot;
+	Resmi = true;
+	TempMaxDegree = 0;
+	MaxDegree = 0;
+	do{
+		if(!IsEmpty(Array[NodeCurrent].FirstSon) && Resmi){		
+			NodeCurrent = Array[NodeCurrent].FirstSon;
+			TempMaxDegree=1;
+		}
+		else {
+			if(!IsEmpty(Array[NodeCurrent].Brother)){
+				TempMaxDegree+=1;
+				NodeCurrent = Array[NodeCurrent].Brother;
+				Resmi = true;
+			}
+			else {
+				if(TempMaxDegree>=MaxDegree) MaxDegree = TempMaxDegree;
+				NodeCurrent = Array[NodeCurrent].Parent;
+				Resmi = false;
+			}
+		}
+	}while(Array[NodeCurrent].Parent != Nil);
+	printf("Max Degree %d \n",MaxDegree);	
 }
