@@ -2,6 +2,7 @@
 #define IndexRoot 1
 #define Nil 0
 #include <stdio.h>
+#include "Queue\sarray.h"
 
 typedef int Infotype;
 typedef struct Tree{
@@ -11,7 +12,9 @@ typedef struct Tree{
 	int Brother;
 }Node;
 
-bool IsEmpty(int Indexs);
+//bool IsEmpty(int Indexs);
+bool IsFull(Tree Array[]);
+
 int Search(Tree Array[],Infotype Data);
 
 /*--------- About Create / Delete A Node/Tree -----------*/
@@ -21,17 +24,17 @@ void DeleteNode(Tree Array[],int Indexs);
 void _DeleteNode(Tree Array[],int Indexs);
 
 /*--------- Info About The Tree -----------*/
-int Depth(Tree Array[]);
-int Min(Tree Array[]);
-int Max(Tree Array[]);
-void Leaf(Tree Array[]);
-int Height(Tree Array[]);
-int Size(Tree Array[]);
-int MaxDegree(Tree Array[]);
+int Depth(Tree Array[],int Indexs);
+int Min(Tree Array[],int Indexs);
+int Max(Tree Array[],int Indexs);
+void Leaf(Tree Array[],int Indexs);
+int Height(Tree Array[],int Indexs);
+int Size(Tree Array[],int Indexs);
+int MaxDegree(Tree Array[],int Indexs);
 
 /*--------- Info About The Node -----------*/
-int Degree(Tree Array[],Infotype Data);
-int Level(Tree[],Infotype Data);
+int Degree(Tree Array[],int Indexs);
+int Level(Tree[],int Indexs);
 void Ancestor(Tree Array[],int Indexs);
 void Descendant(Tree[],int Indexs);
 void SubTree(Tree Array[],int Indexs);
@@ -46,3 +49,4 @@ int GetBrother(Tree Array[],int Indexs);
 void PreOrder (Tree Array[]);
 void PostOrder (Tree Array[]);
 void InOrder(Tree Array[]);
+void LevelOrder(Tree Array[]);
